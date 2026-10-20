@@ -93,7 +93,7 @@ class SignUpScreen extends StatelessWidget {
                     colorText: Colors.white,
                   );
                   return;
-                }else {
+                } else {
                   Get.snackbar(
                     "Sign Up Successful",
                     "The username is ${usernameController.text}, the email is ${emailController.text}, and the password is ${passwordController.text}",
@@ -118,7 +118,7 @@ class SignUpScreen extends StatelessWidget {
                 const Text("Already have an account?"),
                 TextButton(
                   onPressed: () {
-                    Get.back(); // Navigate back to the login screen
+                    Navigator.pop(context); // Navigate back to the login screen
                   },
                   child: const Text("Login"),
                 ),
