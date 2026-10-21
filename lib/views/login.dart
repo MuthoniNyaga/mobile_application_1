@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/configs/colors.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
@@ -14,7 +15,7 @@ class LoginScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Daystar Application"),
-        backgroundColor: const Color.fromARGB(255, 68, 138, 255),
+        backgroundColor:primaryColor, 
         foregroundColor: Colors.white,
         centerTitle: true,
       ),
@@ -28,12 +29,12 @@ class LoginScreen extends StatelessWidget {
               children: [Image.asset("Du.jpg", height: 100, width: 200)],
             ),
             SizedBox(height: 25),
-            const Text(
+            Text(
               "Enter your username",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
-                color: Colors.blueAccent,
+                color: primaryColor, 
               ),
             ),
             TextField(
@@ -46,12 +47,12 @@ class LoginScreen extends StatelessWidget {
               ),
             ),
             SizedBox(height: 25),
-            const Text(
+            Text(
               "Enter your password",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
-                color: Colors.blueAccent,
+                color: primaryColor, 
               ),
             ),
             TextField(
@@ -77,24 +78,26 @@ class LoginScreen extends StatelessWidget {
                   );
                   return;
                 } else {
+                  Get.offAndToNamed("/home");
                   Get.snackbar(
                     "Login Successful",
                     "The username is ${usernameController.text} and the password is ${passwordController.text}",
                     snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.blueAccent,
+                    backgroundColor: primaryColor,
                     colorText: Colors.white,
                   );
+
                 }
 
                 Get.snackbar(
                   "Login Successful",
                   "The username is ${usernameController.text} and the password is ${passwordController.text}",
                   snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: Colors.blueAccent,
+                  backgroundColor: primaryColor,
                   colorText: Colors.white,
                 );
               },
-              color: Colors.blueAccent,
+              color: primaryColor,
               height: 50,
               minWidth: double.infinity,
               child: const Text("login"),
@@ -104,9 +107,13 @@ class LoginScreen extends StatelessWidget {
               children: [
                 Text("No Account?"),
                 SizedBox(width: 5),
-                Text(
-                  "Register",
-                  style: TextStyle(fontSize: 16, color: Colors.blueAccent),
+                GestureDetector(
+                  child: Text(
+                    "Signup",
+                    style: TextStyle(fontSize: 16, color: primaryColor),
+                  ),onTap:(){
+                    Get.toNamed("/signup");
+                  }
                 ),
                 Spacer(),
                 Text("Forgot password?"),

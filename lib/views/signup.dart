@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_application_1/configs/colors.dart';
 import 'package:get/get_core/src/get_main.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
@@ -14,7 +15,7 @@ class SignUpScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Daystar Application"),
-        backgroundColor: const Color.fromARGB(255, 68, 138, 255),
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         centerTitle: true,
       ),
@@ -29,12 +30,12 @@ class SignUpScreen extends StatelessWidget {
             ),
             // Add your sign-up form fields here
             SizedBox(height: 15),
-            const Text(
+            Text(
               "Enter your username",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
-                color: Colors.blueAccent,
+                color: primaryColor,
               ),
             ),
             TextField(
@@ -46,12 +47,12 @@ class SignUpScreen extends StatelessWidget {
               controller: usernameController,
             ),
             SizedBox(height: 15),
-            const Text(
+            Text(
               "Enter your email",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
-                color: Colors.blueAccent,
+                color: primaryColor, 
               ),
             ),
             TextField(
@@ -63,12 +64,12 @@ class SignUpScreen extends StatelessWidget {
               controller: emailController,
             ),
             SizedBox(height: 15),
-            const Text(
+            Text(
               "Enter your password",
               style: TextStyle(
                 fontSize: 20,
                 fontWeight: FontWeight.w900,
-                color: Colors.blueAccent,
+                color: primaryColor,
               ),
             ),
             TextField(
@@ -104,7 +105,7 @@ class SignUpScreen extends StatelessWidget {
                 }
                 // Handle sign-up logic here
               },
-              color: Colors.blueAccent,
+              color: primaryColor, 
               minWidth: double.infinity,
               height: 50,
               child: const Text(
@@ -115,7 +116,7 @@ class SignUpScreen extends StatelessWidget {
             Row(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                const Text("Already have an account?"),
+                const Text("You already have an account?"),
                 TextButton(
                   onPressed: () {
                     Navigator.pop(context); // Navigate back to the login screen
