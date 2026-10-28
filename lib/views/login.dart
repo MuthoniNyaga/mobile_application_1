@@ -120,7 +120,7 @@ class LoginScreen extends StatelessWidget {
                 SizedBox(width: 5),
                 Text(
                   "Recover",
-                  style: TextStyle(fontSize: 16, color: Colors.blueAccent),
+                  style: TextStyle(fontSize: 16, color:primaryColor),
                 ),
               ],
             ),
