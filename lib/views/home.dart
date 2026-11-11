@@ -2,6 +2,10 @@ import 'package:animated_bottom_navigation_bar/animated_bottom_navigation_bar.da
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/configs/colors.dart';
 import 'package:flutter_application_1/controllers/homecontroller.dart';
+import 'package:flutter_application_1/views/dashboard.dart';
+import 'package:flutter_application_1/views/orders.dart';
+import 'package:flutter_application_1/views/products.dart';
+import 'package:flutter_application_1/views/profile.dart';
 import 'package:get/get.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -12,11 +16,13 @@ class HomeScreen extends StatelessWidget {
     final controller = Get.put(HomeController());
 
     // Replace these with your real pages (dashboard, orders, etc.)
-    final pages = const [
-      Center(child: Text('Dashboard')),
-      Center(child: Text('Category')),
-      Center(child: Text('Cart')),
-      Center(child: Text('Profile')),
+    final List<Widget> pages = const [
+      
+      DashboardScreen(), // Assuming you have a DashboardScreen widget
+      ProductsScreen(), // Assuming you have a ProductsScreen widget
+      OrdersScreen(), // Assuming you have an OrdersScreen widget
+      ProfileScreen(), // Assuming you have a ProfileScreen widget
+
     ];
 
     return Scaffold(
@@ -43,3 +49,4 @@ class HomeScreen extends StatelessWidget {
     );
   }
 }
+
