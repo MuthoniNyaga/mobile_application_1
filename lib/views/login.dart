@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/configs/colors.dart';
+import 'package:flutter_application_1/controllers/logincontroller.dart';
 import 'package:get/get_core/src/get_main.dart';
+import 'package:get/get_instance/src/extension_instance.dart';
 import 'package:get/get_navigation/src/extension_navigation.dart';
 import 'package:get/get_navigation/src/snackbar/snackbar.dart';
 
 TextEditingController usernameController = TextEditingController();
 TextEditingController passwordController = TextEditingController();
-
+Logincontroller loginController = Get.put(Logincontroller());
 class LoginScreen extends StatelessWidget {
   const new({super.key});
 
   @override
   Widget build(BuildContext context) {
+    usernameController.text = loginController.readusername();
     return Scaffold(
       appBar: AppBar(
         title: const Text("Daystar Application"),
@@ -67,6 +70,7 @@ class LoginScreen extends StatelessWidget {
             SizedBox(height: 25),
             MaterialButton(
               onPressed: () {
+                loginController.saveusername(usernameController.text);
                 if (usernameController.text.isEmpty ||
                     passwordController.text.isEmpty) {
                   Get.snackbar(
@@ -81,7 +85,7 @@ class LoginScreen extends StatelessWidget {
                   Get.offAndToNamed("/home");
                   Get.snackbar(
                     "Login Successful",
-                    "The username is ${usernameController.text} and the password is ${passwordController.text}",
+                    "The username is ${loginController.readusername()} and the password is ${passwordController.text}",
                     snackPosition: SnackPosition.BOTTOM,
                     backgroundColor: primaryColor,
                     colorText: Colors.white,
@@ -91,7 +95,7 @@ class LoginScreen extends StatelessWidget {
 
                 Get.snackbar(
                   "Login Successful",
-                  "The username is ${usernameController.text} and the password is ${passwordController.text}",
+                  "The username is ${loginController.readusername()} and the password is ${passwordController.text}",
                   snackPosition: SnackPosition.BOTTOM,
                   backgroundColor: primaryColor,
                   colorText: Colors.white,
