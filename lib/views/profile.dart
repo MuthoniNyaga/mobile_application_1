@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/configs/colors.dart';
+import 'package:flutter_application_1/controllers/logincontroller.dart';
+import 'package:get/get.dart';
 
 class ProfileScreen extends StatelessWidget {
   const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
+    final loginController = Get.find<Logincontroller>();
+
     return Scaffold(
       appBar: AppBar(title: const Text('Profile'), centerTitle: true),
       body: SingleChildScrollView(
@@ -23,14 +27,24 @@ class ProfileScreen extends StatelessWidget {
             const SizedBox(height: 16),
 
             // Name & email
-            const Text(
-              'Grace Nyaga',
-              style: TextStyle(fontSize: 24, fontWeight: FontWeight.bold),
+            Obx(
+              () => Text(
+                loginController.username.value,
+                style: const TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
             ),
             const SizedBox(height: 4),
-            Text(
-              'nyaga@example.com',
-              style: TextStyle(fontSize: 16, color: primaryColor.withValues(alpha: 0.7)),
+            Obx(
+              () => Text(
+                loginController.email.value,
+                style: TextStyle(
+                  fontSize: 16,
+                  color: primaryColor.withValues(alpha: 0.7),
+                ),
+              ),
             ),
             const SizedBox(height: 24),
 
@@ -79,7 +93,10 @@ class ProfileScreen extends StatelessWidget {
             SizedBox(
               width: double.infinity,
               child: OutlinedButton.icon(
-                onPressed: () {},
+                onPressed: () async {
+                  await loginController.clearuser();
+                  Get.offAllNamed('/');
+                },
                 icon: const Icon(Icons.logout),
                 label: const Text('Log Out'),
               ),

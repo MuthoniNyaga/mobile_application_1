@@ -1,134 +1,156 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_application_1/configs/colors.dart';
 import 'package:flutter_application_1/controllers/logincontroller.dart';
-import 'package:get/get_core/src/get_main.dart';
-import 'package:get/get_instance/src/extension_instance.dart';
-import 'package:get/get_navigation/src/extension_navigation.dart';
-import 'package:get/get_navigation/src/snackbar/snackbar.dart';
+import 'package:flutter_application_1/services/api_service.dart';
+import 'package:get/get.dart';
 
-TextEditingController usernameController = TextEditingController();
-TextEditingController passwordController = TextEditingController();
-Logincontroller loginController = Get.put(Logincontroller());
-class LoginScreen extends StatelessWidget {
-  const new({super.key});
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({super.key});
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  final _formKey = GlobalKey<FormState>();
+  final _identifierController = TextEditingController();
+  final _passwordController = TextEditingController();
+  final _apiService = ApiService();
+  late final Logincontroller _loginController;
+  bool _isSubmitting = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _loginController = Get.put(Logincontroller());
+    _identifierController.text = _loginController.readusername();
+  }
+
+  @override
+  void dispose() {
+    _identifierController.dispose();
+    _passwordController.dispose();
+    super.dispose();
+  }
+
+  Future<void> _login() async {
+    if (!_formKey.currentState!.validate()) return;
+
+    setState(() => _isSubmitting = true);
+    try {
+      final user = await _apiService.login(
+        identifier: _identifierController.text.trim(),
+        password: _passwordController.text,
+      );
+      await _loginController.saveuser(user.username, user.email);
+      if (!mounted) return;
+
+      Get.offAllNamed('/home');
+      Get.snackbar('Login successful', 'Welcome back, ${user.username}!');
+    } catch (error) {
+      if (!mounted) return;
+      Get.snackbar(
+        'Login failed',
+        _errorMessage(error),
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.redAccent,
+        colorText: Colors.white,
+      );
+    } finally {
+      if (mounted) setState(() => _isSubmitting = false);
+    }
+  }
+
+  String _errorMessage(Object error) {
+    if (error is ApiException) return error.message;
+    return 'Could not connect to the server. Check that XAMPP is running and the API address is correct.';
+  }
 
   @override
   Widget build(BuildContext context) {
-    usernameController.text = loginController.readusername();
     return Scaffold(
       appBar: AppBar(
-        title: const Text("Daystar Application"),
-        backgroundColor:primaryColor, 
+        title: const Text('Daystar Application'),
+        backgroundColor: primaryColor,
         foregroundColor: Colors.white,
         centerTitle: true,
       ),
-      body: Padding(
+      body: SingleChildScrollView(
         padding: const EdgeInsets.all(25),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [Image.asset("Du.jpg", height: 100, width: 200)],
-            ),
-            SizedBox(height: 25),
-            Text(
-              "Enter your username",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                color: primaryColor, 
+        child: Form(
+          key: _formKey,
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              Center(
+                child: Image.asset('assets/Du.jpg', height: 100, width: 200),
               ),
-            ),
-            TextField(
-              controller: usernameController,
-              decoration: const InputDecoration(
-                hintText: "Enter your username",
-                border: OutlineInputBorder(),
-                prefixIcon: Icon(Icons.lock),
-                suffixIcon: Icon(Icons.visibility),
-              ),
-            ),
-            SizedBox(height: 25),
-            Text(
-              "Enter your password",
-              style: TextStyle(
-                fontSize: 20,
-                fontWeight: FontWeight.w900,
-                color: primaryColor, 
-              ),
-            ),
-            TextField(
-              controller: passwordController,
-              decoration: InputDecoration(
-                hintText: "Your secret code",
-                border: const OutlineInputBorder(),
-                prefixIcon: const Icon(Icons.lock),
-                suffixIcon: const Icon(Icons.visibility),
-              ),
-            ),
-            SizedBox(height: 25),
-            MaterialButton(
-              onPressed: () {
-                loginController.saveusername(usernameController.text);
-                if (usernameController.text.isEmpty ||
-                    passwordController.text.isEmpty) {
-                  Get.snackbar(
-                    "Error",
-                    "Please enter username and password",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: Colors.redAccent,
-                    colorText: Colors.white,
-                  );
-                  return;
-                } else {
-                  Get.offAndToNamed("/home");
-                  Get.snackbar(
-                    "Login Successful",
-                    "The username is ${loginController.readusername()} and the password is ${passwordController.text}",
-                    snackPosition: SnackPosition.BOTTOM,
-                    backgroundColor: primaryColor,
-                    colorText: Colors.white,
-                  );
-
-                }
-
-                Get.snackbar(
-                  "Login Successful",
-                  "The username is ${loginController.readusername()} and the password is ${passwordController.text}",
-                  snackPosition: SnackPosition.BOTTOM,
-                  backgroundColor: primaryColor,
-                  colorText: Colors.white,
-                );
-              },
-              color: primaryColor,
-              height: 50,
-              minWidth: double.infinity,
-              child: const Text("login"),
-            ),
-            SizedBox(height: 10),
-            Row(
-              children: [
-                Text("No Account?"),
-                SizedBox(width: 5),
-                GestureDetector(
-                  child: Text(
-                    "Signup",
-                    style: TextStyle(fontSize: 16, color: primaryColor),
-                  ),onTap:(){
-                    Get.toNamed("/signup");
+              const SizedBox(height: 25),
+              TextFormField(
+                controller: _identifierController,
+                textInputAction: TextInputAction.next,
+                decoration: const InputDecoration(
+                  labelText: 'Username or email',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.person),
+                ),
+                validator: (value) {
+                  if (value == null || value.trim().isEmpty) {
+                    return 'Enter your username or email.';
                   }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 20),
+              TextFormField(
+                controller: _passwordController,
+                obscureText: true,
+                textInputAction: TextInputAction.done,
+                onFieldSubmitted: (_) => _login(),
+                decoration: const InputDecoration(
+                  labelText: 'Password',
+                  border: OutlineInputBorder(),
+                  prefixIcon: Icon(Icons.lock),
                 ),
-                Spacer(),
-                Text("Forgot password?"),
-                SizedBox(width: 5),
-                Text(
-                  "Recover",
-                  style: TextStyle(fontSize: 16, color:primaryColor),
+                validator: (value) {
+                  if (value == null || value.isEmpty) {
+                    return 'Enter your password.';
+                  }
+                  return null;
+                },
+              ),
+              const SizedBox(height: 24),
+              SizedBox(
+                height: 50,
+                child: ElevatedButton(
+                  onPressed: _isSubmitting ? null : _login,
+                  style: ElevatedButton.styleFrom(
+                    backgroundColor: primaryColor,
+                    foregroundColor: Colors.white,
+                  ),
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 22,
+                          height: 22,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Log in'),
                 ),
-              ],
-            ),
-          ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  const Text('No account?'),
+                  TextButton(
+                    onPressed: _isSubmitting
+                        ? null
+                        : () => Get.toNamed('/registration'),
+                    child: const Text('Sign up'),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

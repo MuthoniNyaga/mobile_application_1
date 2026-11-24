@@ -1,14 +1,33 @@
-import 'package:get/get_rx/src/rx_types/rx_types.dart';
-import 'package:get/get_state_manager/src/simple/get_controllers.dart';
+import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 
 class Logincontroller extends GetxController {
- var username = ''.obs;
-  final  store=GetStorage();
-  void saveusername(String username){
-  this .username.value = username;
-    store.write("username", username);
+  final username = ''.obs;
+  final email = ''.obs;
+  final GetStorage store = GetStorage();
+
+  @override
+  void onInit() {
+    super.onInit();
+    username.value = readusername();
+    email.value = reademail();
   }
-  String readusername()=>store.read("username")?? "";
+
+  Future<void> saveuser(String username, String email) async {
+    this.username.value = username;
+    this.email.value = email;
+    await store.write('username', username);
+    await store.write('email', email);
   }
-  
+
+  Future<void> clearuser() async {
+    username.value = '';
+    email.value = '';
+    await store.remove('username');
+    await store.remove('email');
+  }
+
+  String readusername() => store.read('username') ?? '';
+
+  String reademail() => store.read('email') ?? '';
+}
